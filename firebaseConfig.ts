@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.API_KEY,
@@ -14,3 +14,19 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 export const database = getFirestore(app);
+
+export const addWord = async (word: Word): Promise<string> => {
+  const wordRef = await addDoc(collection(database, 'WORDS'), word);
+  return wordRef.id;
+}
+
+export const getWords = async (): Promise<Word[]> => {
+  const words = await getDocs(collection(database, 'WORDS'));
+
+  let arrayWords: Word[] = [];
+  words.forEach((word) => {
+    arrayWords.push(word.data() as Word);
+  });
+
+  return arrayWords;
+}

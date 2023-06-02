@@ -11,8 +11,8 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --background-start-rgb: 31, 27, 63;
+    --background-end-rgb: 63, 63, 63;
   }
 }
 
@@ -25,3 +25,21 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.modal {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 1rem 2rem;
+  border: 2px solid white;
+  border-radius: 0.75rem;
+  opacity: 1;
+  top: 0;
+  transition: opacity 0.5s, top 0.5s;
+}
+
+.modal.closed {
+  opacity: 0;
+  top: -2rem;
+}
+
