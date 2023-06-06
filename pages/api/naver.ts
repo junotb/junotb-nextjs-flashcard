@@ -4,12 +4,21 @@ const naver = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  const koreanName = "양파";
+  if (req.method !== 'POST') {
+    res.status(405).json({
+      message: "HTTP Method Error"
+    });
+  }
 
-  let api_url = `${process.env.NAVER_API_URL}?`;
-  api_url += 'source=ko';
-  api_url += '&target=en';
-  api_url += `&text=${koreanName}`;
+  const koreanName = req.body.koreanName;
+
+  const params = new URLSearchParams();
+  params.append('source', 'ko');
+  params.append('target', 'en');
+  params.append('text', koreanName);
+
+  let api_url = process.env.NAVER_API_URL;
+  api_url = `${api_url}?${params.toString()}`;
 
   await fetch(api_url, {
     method: "POST",
@@ -19,8 +28,7 @@ const naver = async (
       'X-Naver-Client-Secret': process.env.NAVER_CLIENT_SECRET!
     },
   })
-  .then((response) => res.status(200).json(response))
-  .catch((error) => console.error(error));
+  .then(response => res.status(200).json(response));
 };
 
 module.exports = naver;

@@ -13,21 +13,6 @@ export default function Home() {
   };
 
   const submitHandler = async () => {
-    let api_url = `${process.env.NAVER_API_URL}?`;
-    api_url += 'source=ko';
-    api_url += '&target=en';
-    api_url += `&text=${koreanName}`;
-  
-    await fetch(api_url, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'X-Naver-Client-Id': process.env.NAVER_CLIENT_ID!,
-        'X-Naver-Client-Secret': process.env.NAVER_CLIENT_SECRET!
-      },
-    })
-    .then(response => console.log(response));
-    return;
     const params = {
       koreanName: koreanName
     };
