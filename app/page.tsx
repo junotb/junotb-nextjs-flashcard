@@ -8,24 +8,45 @@ export default function Home() {
   const [koreanName, setKoreanName] = useState<string>('');
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const blurHandler = (e: React.FocusEvent<HTMLInputElement>) => {
-    setKoreanName(e.target.value);
-  };
-
   const submitHandler = async () => {
-    const params = {
-      koreanName: koreanName
-    };
-    await fetch("/api/naver", {
-      method: 'POST',
-      body: JSON.stringify(params)
-    })
-    .then(response => response.json())
-    .then(response => console.log(response))
-    .catch(error => console.error(error));
+    const englishName = await naverHandler(koreanName);
+    const description = await oxfordHandler(englishName);
+
+    addHandler(englishName, description);
   }
 
-  const initHandler = async () => {
+  const naverHandler = async (koreanName: string) => {
+    return await fetch("/api/naver", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        koreanName: koreanName
+      })
+    })
+    .then(response => response.json())
+    .then(response => {
+      return response.englishName;
+    });
+  }
+
+  const oxfordHandler = async (englishName: string) => {
+    return await fetch(`/api/oxford?englishName=${englishName}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(response => {
+      return response.description;
+    });
+  }
+
+  const getHandler = async () => {
     setWords([]);
     try {
       const arrayWords: Word[] = await getWords();
@@ -35,10 +56,24 @@ export default function Home() {
     }
   }
 
+  const addHandler = async (englishName: string, description: string) => {
+    const newWord: Word = {
+      KOREAN_NAME: koreanName,
+      ENGLISH_NAME: englishName,
+      DESCRIPTION: description
+    }
+
+    const id = await addWord(newWord);
+    console.log(id);
+
+    setKoreanName('');
+    getHandler();
+  }
+
   const clickModal = () => setShowModal(!showModal);
 
   useEffect(() => {
-    initHandler();
+    getHandler();
   }, []);
 
   return (
@@ -54,10 +89,11 @@ export default function Home() {
         <div className='px-4'>
           <div className={(showModal) ? 'modal' : 'modal closed'}>
             <input
-              onBlur={blurHandler}
+              onChange={(e) => setKoreanName(e.target.value)}
               type='text'
               name='koreanName'
-              className='w-full bg-transparent outline-none decoration-solid border-b-[2px]' placeholder='Type Korean Word' />
+              className='w-full bg-transparent outline-none decoration-solid border-b-[2px]' placeholder='Type Korean Word'
+              value={koreanName} />
             <button
               onClick={submitHandler}
               className='z-10 px-4 font-bold bg-white rounded-lg text-violet-950 hover:bg-slate-400 active:bg-slate-600'

@@ -1,15 +1,20 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const oxford = (
+const oxford = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
-  const englishName = req.query.englishName;
-  
-  let api_url = `${process.env.OXFORD_API_URL}`;
-  api_url += englishName;
+  if (req.method !== 'GET') {
+    res.status(405).json({
+      message: "HTTP Method Error"
+    });
+  }
 
-  const response = fetch(api_url, {
+  const { englishName } = req.query;
+  
+  let api_url = `${process.env.OXFORD_API_URL}${englishName}`;
+
+  const response = await fetch(api_url, {
     method: "GET",
     headers: {
       app_id: process.env.OXFORD_CLIENT_ID!,
@@ -17,9 +22,9 @@ const oxford = (
       language: 'en-gb',
       word_id: englishName as string
     },
-  }).catch((error) => console.error(error));
-  
-  res.status(200).json(response);
+  });
+  const jsonData = await response.json();
+  res.status(200).json({ description: jsonData.results[0].lexicalEntries[0].entries[0].etymologies[0] });
 }
 
 module.exports = oxford;

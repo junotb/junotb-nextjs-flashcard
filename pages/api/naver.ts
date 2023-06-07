@@ -10,7 +10,7 @@ const naver = async (
     });
   }
 
-  const koreanName = req.body.koreanName;
+  const { koreanName } = req.body;
 
   const params = new URLSearchParams();
   params.append('source', 'ko');
@@ -19,16 +19,17 @@ const naver = async (
 
   let api_url = process.env.NAVER_API_URL;
   api_url = `${api_url}?${params.toString()}`;
-
-  await fetch(api_url, {
+  
+  const response = await fetch(api_url, {
     method: "POST",
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
       'X-Naver-Client-Id': process.env.NAVER_CLIENT_ID!,
       'X-Naver-Client-Secret': process.env.NAVER_CLIENT_SECRET!
     },
-  })
-  .then(response => res.status(200).json(response));
+  });
+  const jsonData = await response.json();
+  res.status(200).json({ englishName: jsonData.message.result.translatedText });
 };
 
 module.exports = naver;
