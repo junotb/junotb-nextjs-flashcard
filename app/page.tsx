@@ -63,8 +63,7 @@ export default function Home() {
       DESCRIPTION: description
     }
 
-    const id = await addWord(newWord);
-    console.log(id);
+    await addWord(newWord);
 
     setKoreanName('');
     getHandler();
