@@ -10,6 +10,7 @@ https://ts-serverless-note.vercel.app
 Vercel이 개발한 웹 애플리케이션을 만들기 위한 오픈소스 React 프레임워크.
 
 ## Firebase:
+Google의 NoSQL 서버리스 서비스.
 
 ## angular-notes:
 https://github.com/johanneslee/angular-notes
