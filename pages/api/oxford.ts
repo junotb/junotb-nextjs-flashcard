@@ -24,7 +24,7 @@ const oxford = async (
     },
   });
   const jsonData = await response.json();
-  res.status(200).json({ description: jsonData.results[0].lexicalEntries[0].entries[0].etymologies[0] });
+  res.status(200).json({ description: jsonData.results[0].lexicalEntries[0].entries[0].senses[0].shortDefinitions[0] });
 }
 
 module.exports = oxford;
