@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.API_KEY,
@@ -16,16 +16,31 @@ export const app = initializeApp(firebaseConfig);
 export const database = getFirestore(app);
 
 export const addWord = async (word: Word): Promise<string> => {
-  const wordRef = await addDoc(collection(database, 'WORDS'), word);
-  return wordRef.id;
+  const docRef = await addDoc(collection(database, 'WORDS'), {
+    KOREAN_NAME: word.KOREAN_NAME,
+    ENGLISH_NAME: word.ENGLISH_NAME,
+    DESCRIPTION: word.DESCRIPTION
+  });
+  return docRef.id;
+}
+
+export const deleteWord = async (id: string): Promise<void> => {
+  const wordRef = await deleteDoc(doc(database, 'WORDS', id));
 }
 
 export const getWords = async (): Promise<Word[]> => {
-  const words = await getDocs(collection(database, 'WORDS'));
+  const querySnapshot = await getDocs(collection(database, 'WORDS'));
 
   let arrayWords: Word[] = [];
-  words.forEach((word) => {
-    arrayWords.push(word.data() as Word);
+  querySnapshot.forEach((element) => {
+    const data = element.data();
+    const word: Word = {
+      ID: element.id,
+      KOREAN_NAME: data.KOREAN_NAME,
+      ENGLISH_NAME: data.ENGLISH_NAME,
+      DESCRIPTION: data.DESCRIPTION
+    }
+    arrayWords.push(word);
   });
 
   return arrayWords;

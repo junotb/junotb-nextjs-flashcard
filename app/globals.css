@@ -4,15 +4,13 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --background-rgb: 255, 255, 255;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 31, 27, 63;
-    --background-end-rgb: 63, 63, 63;
+    --background-rgb: 0, 0, 0;
   }
 }
 
@@ -21,9 +19,9 @@ body {
   background: linear-gradient(
       to bottom,
       transparent,
-      rgb(var(--background-end-rgb))
+      rgb(var(--background-rgb))
     )
-    rgb(var(--background-start-rgb));
+    rgb(var(--background-rgb));
 }
 
 .modal {
@@ -32,11 +30,12 @@ body {
   top: 0;
   overflow: hidden;
   width: 100%;
-  padding: 1rem 2rem;
+  padding: 1rem;
   border: 2px solid white;
   border-radius: 0.75rem;
   opacity: 1;
   transition: opacity 0.5s, padding-top 0.5s, padding-bottom 0.5s, height 0.5s, top 0.5s;
+  gap: 1rem;
 }
 
 .modal.closed {
@@ -45,8 +44,4 @@ body {
   padding-bottom: 0;
   padding-top: 0;
   opacity: 0;
-}
-
-.modal > * + * {
-  margin-left: 1rem;
 }
