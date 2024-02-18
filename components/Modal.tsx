@@ -48,6 +48,7 @@ export default function Modal({ isHidden, callGetWords}: modalProps) {
   }
 
   const handleAddWord = async (englishName: string, description: string) => {
+    const koreanName = refKoreanName.current!.value;
     const newWord: Word = {
       ID: '',
       KOREAN_NAME: koreanName,
