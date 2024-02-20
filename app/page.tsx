@@ -36,44 +36,41 @@ export default function Home() {
 
   return (
     <main className='w-screen h-screen sm:p-24'>
-      <section className='w-full'>
-        <div className='flex flex-row justify-between p-4'>
-          <h1 className='text-2xl font-bold'>Ts-Serverless-Notes</h1>
-          <button
-            onClick={handleIsHidden}
-            className='z-10 px-4 font-bold bg-white text-violet-950 rounded-xl hover:bg-slate-400 active:bg-slate-600'
-          >{(isHidden) ? 'Close Modal' : 'Open Modal'}</button>
-        </div>
-        <div className='px-4'>
-          <Modal
-            isHidden={isHidden}
-            callGetWords={handleGetWords} />
-        </div>
-        <div className='p-4 space-y-4'>
-          {
-            words.length > 0 &&
-            words.map((word) => 
-              <div
-                key={word.ID}
-                className='flex w-full p-4 border-2 border-white border-solid rounded-xl gap-4'
-              >
-                <div className='w-full'>
-                  <h3 className='text-lg font-semibold'>{word.KOREAN_NAME}&nbsp;({word.ENGLISH_NAME})</h3>
-                  <h4>{word.DESCRIPTION}</h4>
-                </div>
-                <div className='flex items-center'>
-                  <button
-                    onClick={(e) => {
-                      handleDeleteWord(word.ID)
-                    }}
-                    className='cursor-pointer'
-                  >X</button>
-                </div>
+      <div className='flex flex-row justify-between p-4'>
+        <h1 className='text-2xl font-bold'>Serverless Notes</h1>
+        <button
+          onClick={handleIsHidden}
+          className='z-10 px-4 font-bold bg-white text-violet-950 rounded-xl hover:bg-slate-400 active:bg-slate-600'
+        >{(isHidden) ? 'Close Modal' : 'Open Modal'}</button>
+      </div>
+      <div className='px-4'>
+        <Modal
+          isHidden={isHidden}
+          callGetWords={handleGetWords} />
+      </div>
+      <div className='p-4 space-y-4'>
+        {
+          words.map((word) => 
+            <div
+              key={word.ID}
+              className='flex w-full p-4 border-2 border-white border-solid rounded-xl gap-4'
+            >
+              <div className='w-full'>
+                <h3 className='text-lg font-semibold'>{word.KOREAN_NAME}&nbsp;({word.ENGLISH_NAME})</h3>
+                <h4>{word.DESCRIPTION}</h4>
               </div>
-            )
-          }
-        </div>
-      </section>
+              <div className='flex items-center'>
+                <button
+                  onClick={(e) => {
+                    handleDeleteWord(word.ID)
+                  }}
+                  className='cursor-pointer'
+                >X</button>
+              </div>
+            </div>
+          )
+        }
+      </div>
     </main>
   )
 }

@@ -10,9 +10,13 @@ export default function Modal({ isHidden, callGetWords}: modalProps) {
       const koreanName = refKoreanName.current!.value;
       const englishName = await handleNaver(koreanName);
       const description = await handleOxford(englishName);
+
+      if (!description) {
+        throw new Error('Cannot get a description from Oxford. Please try others.');
+      }
       handleAddWord(englishName, description);
     } catch (error) {
-      console.error('Error adding document: ', error);
+      alert(`${error}`);
     }
   }
 
@@ -55,6 +59,7 @@ export default function Modal({ isHidden, callGetWords}: modalProps) {
       ENGLISH_NAME: englishName,
       DESCRIPTION: description
     }
+    console.log(newWord);
     await addWord(newWord);
     callGetWords();
     refKoreanName.current!.value = '';
