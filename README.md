@@ -9,6 +9,8 @@ Firebase는 Google의 NoSQL 서버리스 서비스입니다. 데이터 저장 �
 
 ## Naver Papago Translation API
 Naver 클라우드 플랫폼에서 제공하는 API 중 하나로, 텍스트, 문서, 웹사이트 번역과 언어 감지 기능을 제공합니다. 한글 단어를 영어로 번역하기 위해 사용되었습니다.
+https://api.ncloud-docs.com/docs/ai-naver-papagonmt
 
 ## Oxford Dictionaries API
 Oxford에서 제공하는 사전 검색 API로, 영어 단어에 대한 상세 정보를 검색하기 위해 사용되었습니다.
+https://developer.oxforddictionaries.com/
