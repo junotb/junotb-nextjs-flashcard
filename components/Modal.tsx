@@ -1,80 +1,89 @@
 import { addWord } from '../firebaseConfig';
-import { useRef, useState } from 'react';
-import { modalProps } from '@/types/props';
+import { useRef } from 'react';
 
-export default function Modal({ isHidden, callGetWords}: modalProps) {
+export default function Modal({ handleIsActive, handleGetWords }: { handleIsActive: () => void, handleGetWords: () => void }) {
   const refKoreanName = useRef<HTMLInputElement>(null);
 
   const handleClick = async () => {
     try {
       const koreanName = refKoreanName.current!.value;
-      const englishName = await handleNaver(koreanName);
-      const description = await handleOxford(englishName);
 
+      const englishName = await fetch("/api/naver", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ koreanName: koreanName })
+      })
+        .then(response => response.json())
+        .then(data => data.englishName.toLowerCase());
+      if (!englishName) {
+        throw new Error('Cannot get a englishName from Naver. Please try others.');
+      }
+
+      const description = await fetch("/api/oxford", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ englishName: englishName })
+      })
+        .then(response => response.json())
+        .then(data => data.description);
       if (!description) {
         throw new Error('Cannot get a description from Oxford. Please try others.');
       }
-      handleAddWord(englishName, description);
+
+      await addWord({
+        id: '',
+        korean_name: koreanName,
+        english_name: englishName,
+        description: description
+      });
+
+      handleGetWords();
+
+      refKoreanName.current!.value = '';
     } catch (error) {
-      alert(`${error}`);
+      alert(error);
     }
-  }
-
-  const handleNaver = async (koreanName: string) => {
-    return await fetch("/api/naver", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        koreanName: koreanName
-      })
-    })
-    .then(response => response.json())
-    .then(response => {
-      return response.englishName.toLowerCase();
-    });
-  }
-
-  const handleOxford = async (englishName: string) => {
-    return await fetch(`/api/oxford?englishName=${englishName}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    })
-    .then(response => response.json())
-    .then(response => {
-      return response.description;
-    });
-  }
-
-  const handleAddWord = async (englishName: string, description: string) => {
-    const koreanName = refKoreanName.current!.value;
-    const newWord: Word = {
-      ID: '',
-      KOREAN_NAME: koreanName,
-      ENGLISH_NAME: englishName,
-      DESCRIPTION: description
-    }
-    console.log(newWord);
-    await addWord(newWord);
-    callGetWords();
-    refKoreanName.current!.value = '';
-  }
+  };
 
   return (
-    <div className={(isHidden) ? 'modal' : 'modal closed'}>
-      <input
-        ref={refKoreanName}
-        type='text'
-        className='w-full bg-transparent outline-none decoration-solid border-b-[2px]' placeholder='Type Korean Word' />
-      <button
-        onClick={handleClick}
-        className='z-10 px-4 font-bold bg-white rounded-lg text-violet-950 hover:bg-slate-400 active:bg-slate-600'
-      >Submit</button>
+    <div className="fixed top-0 left-0 flex justify-center items-center w-full h-full">
+      <div className="flex flex-col border-2 w-full max-w-[32rem] bg-black rounded-sm">
+        <div className="flex justify-between items-center border-b">
+          <h5 className="m-4 text-xl font-bold">Type a Korean Word</h5>
+          <button
+            type="button"
+            onClick={handleIsActive}
+            className="m-4"
+            aria-label="Close"
+          >
+            <span className="text-xl font-bold" aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div className="border-b p-4">
+          <input
+            type="text"
+            ref={refKoreanName}
+            className="border-b-[2px] px-4 py-2 w-full bg-white text-black outline-none" placeholder="안녕하세요" />
+        </div>
+        <div className="flex justify-end gap-2 p-4">
+          <button
+            type="button"
+            onClick={handleIsActive}
+            className="border px-4 py-2 rounded-sm"
+          >Close</button>
+          <button
+            type="button"
+            onClick={handleClick}
+            className="border px-4 py-2 rounded-sm"
+          >Save</button>
+        </div>
+      </div>
     </div>
   )
 }

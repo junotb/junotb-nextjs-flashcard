@@ -2,9 +2,9 @@ export {}
 
 declare global {
   interface Word {
-    ID: string
-    KOREAN_NAME: string
-    ENGLISH_NAME: string
-    DESCRIPTION: string
+    id: string
+    korean_name: string
+    english_name: string
+    description: string
   }
 }

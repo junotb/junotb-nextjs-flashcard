@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Ts-Serverless-Note'
+  title: 'Flashcard'
 }
 
 export default function RootLayout({

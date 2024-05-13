@@ -2,43 +2,42 @@ import { initializeApp } from "firebase/app";
 import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: process.env.API_KEY,
-  authDomain: process.env.AUTH_DOMAIN,
-  databaseURL: process.env.DATABASE_URL,
-  projectId: process.env.PROJECT_ID,
-  storageBucket: process.env.STORAGE_BUCKET,
-  messagingSenderId: process.env.MESSAGING_SENDER_ID,
-  appId: process.env.APP_ID,
-  measurementId: process.env.MEASUREMENT_ID
+  apiKey: process.env.NEXT_PUBLIC_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_MEASUREMENT_ID
 }
 
 export const app = initializeApp(firebaseConfig);
 export const database = getFirestore(app);
 
 export const addWord = async (word: Word): Promise<string> => {
-  const docRef = await addDoc(collection(database, 'WORDS'), {
-    KOREAN_NAME: word.KOREAN_NAME,
-    ENGLISH_NAME: word.ENGLISH_NAME,
-    DESCRIPTION: word.DESCRIPTION
+  const docRef = await addDoc(collection(database, 'words'), {
+    korean_name: word.korean_name,
+    english_name: word.english_name,
+    description: word.description
   });
   return docRef.id;
 }
 
 export const deleteWord = async (id: string): Promise<void> => {
-  const wordRef = await deleteDoc(doc(database, 'WORDS', id));
+  const wordRef = await deleteDoc(doc(database, 'words', id));
 }
 
 export const getWords = async (): Promise<Word[]> => {
-  const querySnapshot = await getDocs(collection(database, 'WORDS'));
+  const querySnapshot = await getDocs(collection(database, 'words'));
 
   let arrayWords: Word[] = [];
   querySnapshot.forEach((element) => {
     const data = element.data();
     const word: Word = {
-      ID: element.id,
-      KOREAN_NAME: data.KOREAN_NAME,
-      ENGLISH_NAME: data.ENGLISH_NAME,
-      DESCRIPTION: data.DESCRIPTION
+      id: element.id,
+      korean_name: data.korean_name,
+      english_name: data.english_name,
+      description: data.description
     }
     arrayWords.push(word);
   });

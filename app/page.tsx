@@ -1,76 +1,62 @@
 'use client'
 
 import Modal from '@/components/Modal';
-import { deleteWord, getWords } from '../firebaseConfig';
+import { getWords } from '../firebaseConfig';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [words, setWords] = useState<Word[]>([]);
-  const [isHidden, setIsHidden] = useState<boolean>(false);
+  const [isActive, setIsActive] = useState<boolean>(false);
 
   const handleGetWords = async () => {
-    setWords([]);
     try {
       const arrayWords: Word[] = await getWords();
+      console.log(arrayWords);
       setWords(arrayWords);
-      setIsHidden(false);
+      setIsActive(false);
     } catch (error) {
       console.error('Error adding document: ', error);
     }
   }
 
-  const handleDeleteWord = async (id: string) => {
-    try {
-      await deleteWord(id);
-      handleGetWords();
-    } catch (error) {
-      console.error('Error adding document: ', error);
-    }
-  }
-
-  const handleIsHidden = () => setIsHidden(!isHidden);
+  const handleIsActive = () => setIsActive(!isActive);
 
   useEffect(() => {
+    console.log()
     handleGetWords();
   }, []);
 
   return (
-    <main className='w-screen h-screen sm:p-24'>
-      <div className='flex flex-row justify-between p-4'>
-        <h1 className='text-2xl font-bold'>Serverless Notes</h1>
-        <button
-          onClick={handleIsHidden}
-          className='z-10 px-4 font-bold bg-white text-violet-950 rounded-xl hover:bg-slate-400 active:bg-slate-600'
-        >{(isHidden) ? 'Close Modal' : 'Open Modal'}</button>
+    <div className="flex flex-col w-full h-full">
+      <div className="flex justify-start items-center border-b px-4 w-full h-20 bg-neutral-800">
+        <h1 className="text-2xl font-bold">Flashcard</h1>
       </div>
-      <div className='px-4'>
-        <Modal
-          isHidden={isHidden}
-          callGetWords={handleGetWords} />
-      </div>
-      <div className='p-4 space-y-4'>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mx-auto p-6 gap-6">
         {
           words.map((word) => 
             <div
-              key={word.ID}
-              className='flex w-full p-4 border-2 border-white border-solid rounded-xl gap-4'
+              key={word.id}
+              className="flex flex-col gap-2 border p-4 w-60 h-[20rem] bg-black hover:bg-neutral-800 rounded-lg"
             >
-              <div className='w-full'>
-                <h3 className='text-lg font-semibold'>{word.KOREAN_NAME}&nbsp;({word.ENGLISH_NAME})</h3>
-                <h4>{word.DESCRIPTION}</h4>
-              </div>
-              <div className='flex items-center'>
-                <button
-                  onClick={(e) => {
-                    handleDeleteWord(word.ID)
-                  }}
-                  className='cursor-pointer'
-                >X</button>
-              </div>
+              <h3 className="border-b pb-2 text-lg font-semibold">{word.korean_name}&nbsp;({word.english_name})</h3>
+              <h4>{word.description}</h4>
             </div>
           )
         }
+        <div
+          onClick={handleIsActive}
+          className="flex justify-center items-center border w-60 h-[20rem] bg-black hover:bg-neutral-800 rounded-lg"
+        >
+          <span className="text-6xl" aria-hidden="true">+</span>
+        </div>
       </div>
-    </main>
+      {
+        isActive &&
+        <Modal
+          handleIsActive={handleIsActive}
+          handleGetWords={handleGetWords}
+        />
+      }
+    </div>
   )
-}
+};
