@@ -53,7 +53,7 @@ export default function Modal({ handleIsActive, handleGetWords }: { handleIsActi
 
   return (
     <div className="fixed top-0 left-0 flex justify-center items-center w-full h-full">
-      <div className="flex flex-col border-2 w-full max-w-[32rem] bg-black rounded-sm">
+      <div className="flex flex-col border-2 w-full max-w-[32rem] bg-black rounded-sm z-10">
         <div className="flex justify-between items-center border-b">
           <h5 className="m-4 text-xl font-bold">Type a Korean Word</h5>
           <button
@@ -84,6 +84,7 @@ export default function Modal({ handleIsActive, handleGetWords }: { handleIsActi
           >Save</button>
         </div>
       </div>
+      <div className="fixed top-0 bottom-0 left-0 right-0 w-full h-full bg-black opacity-50"></div>
     </div>
   )
 }
